@@ -49,7 +49,9 @@ function PasswordRules({ password }: { password: string }) {
       password === "000000" ||
       password === "qwert" ||
       password === "abc123" ||
-      password === "password1"
+      password === "password1" ||
+      password === "" ||
+      password == "12345Qwert!"
     ) {
       setIsCommonPassword(true);
     } else {
@@ -65,7 +67,7 @@ function PasswordRules({ password }: { password: string }) {
     <div className="border border-primary rounded p-3 mt-4">
       <h2 className="font-bold text-xl mb-3">Password Rules</h2>
       <ul className="grid grid-cols-2 gap-y-2">
-        <li className="flex gap-2">
+        <li className={`flex gap-2 ${isAtLeast8 ? "line-through" : ""}`}>
           {isAtLeast8 ? (
             <Image src={correct} alt="correct" width={18} height={18} />
           ) : (
@@ -73,7 +75,7 @@ function PasswordRules({ password }: { password: string }) {
           )}
           Must be at least 8 characters long
         </li>
-        <li className="flex gap-2">
+        <li className={`flex gap-2 ${hasNumber ? "line-through" : ""}`}>
           {hasNumber ? (
             <Image src={correct} alt="correct" width={18} height={18} />
           ) : (
@@ -81,7 +83,7 @@ function PasswordRules({ password }: { password: string }) {
           )}
           Must contain at least one number
         </li>
-        <li className="flex gap-2">
+        <li className={`flex gap-2 ${hasSpecialChar ? "line-through" : ""}`}>
           {hasSpecialChar ? (
             <Image src={correct} alt="correct" width={18} height={18} />
           ) : (
@@ -89,7 +91,7 @@ function PasswordRules({ password }: { password: string }) {
           )}
           Must contain at least one special character
         </li>
-        <li className="flex gap-2">
+        <li className={`flex gap-2 ${hasUpperCase ? "line-through" : ""}`}>
           {hasUpperCase ? (
             <Image src={correct} alt="correct" width={18} height={18} />
           ) : (
@@ -97,7 +99,7 @@ function PasswordRules({ password }: { password: string }) {
           )}
           Must contain at least one uppercase letter
         </li>
-        <li className="flex gap-2">
+        <li className={`flex gap-2 ${hasLowerCase ? "line-through" : ""}`}>
           {hasLowerCase ? (
             <Image src={correct} alt="correct" width={18} height={18} />
           ) : (
@@ -105,7 +107,7 @@ function PasswordRules({ password }: { password: string }) {
           )}
           Must contain at least one lowercase letter
         </li>
-        <li className="flex gap-2">
+        <li className={`flex gap-2 ${!isCommonPassword ? "line-through" : ""}`}>
           {!isCommonPassword ? (
             <Image src={correct} alt="correct" width={18} height={18} />
           ) : (

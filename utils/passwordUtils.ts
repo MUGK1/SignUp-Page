@@ -12,12 +12,26 @@ export const calculatePasswordStrength = (
   const hasSpecial = specialChars.test(password);
 
   let entropyPerChar = 0;
-  if (hasUpper) entropyPerChar += 5.17;
-  if (hasLower) entropyPerChar += 5.17;
-  if (hasNumber) entropyPerChar += 3.32;
-  if (hasSpecial) entropyPerChar += 5.95;
+  let charTypesCount = 0;
 
-  const totalEntropy = entropyPerChar * password.length;
+  if (hasUpper) {
+    entropyPerChar += 5.17;
+    charTypesCount++;
+  }
+  if (hasLower) {
+    entropyPerChar += 5.17;
+    charTypesCount++;
+  }
+  if (hasNumber) {
+    entropyPerChar += 3.32;
+    charTypesCount++;
+  }
+  if (hasSpecial) {
+    entropyPerChar += 5.95; // log2(32 to 33 common symbols)
+    charTypesCount++;
+  }
+
+  const totalEntropy = (entropyPerChar * password.length) / charTypesCount;
 
   // Estimate crack time: we assume 10 billion guesses per second
   const crackTimeSeconds = Math.pow(2, totalEntropy) / 10_000_000_000;
