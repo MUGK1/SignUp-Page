@@ -27,15 +27,41 @@ export const calculatePasswordStrength = (
     charTypesCount++;
   }
   if (hasSpecial) {
-    entropyPerChar += 5.95; // log2(32 to 33 common symbols)
+    entropyPerChar += 5.95;
     charTypesCount++;
   }
 
   const totalEntropy = (entropyPerChar * password.length) / charTypesCount;
 
-  // Estimate crack time: we assume 10 billion guesses per second
   const crackTimeSeconds = Math.pow(2, totalEntropy) / 10_000_000_000;
   const crackTimeYears = crackTimeSeconds / (60 * 60 * 24 * 365);
 
   return [totalEntropy, crackTimeYears];
+};
+
+export const generateStrongPassword = (): string => {
+  const upperCaseLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  const lowerCaseLetters = "abcdefghijklmnopqrstuvwxyz";
+  const numbers = "0123456789";
+  const specialCharacters = "!@#$%^&*()-_=+[]{};:'\",.<>?";
+
+  const allChars =
+    upperCaseLetters + lowerCaseLetters + numbers + specialCharacters;
+  const charSetSize = allChars.length;
+
+  const requiredEntropy = 130;
+  const minLength = Math.ceil(requiredEntropy / Math.log2(charSetSize));
+
+  const getRandomChar = (): string => {
+    const randomIndex =
+      crypto.getRandomValues(new Uint32Array(1))[0] % allChars.length;
+    return allChars[randomIndex];
+  };
+
+  let password = "";
+  for (let i = 0; i < minLength; i++) {
+    password += getRandomChar();
+  }
+
+  return password;
 };

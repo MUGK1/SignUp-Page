@@ -11,7 +11,7 @@ export default function Home() {
     <main
       className={`flex min-h-screen bg-secondaryTwo text-white ${raleWay.className}`}
     >
-      <div className="w-6/12 my-32 mx-9">
+      <div className="w-6/12 my-20 mx-9">
         <h1 className="font-bold text-6xl">Welcome To Test!</h1>
         <p className="py-2 px-2">Hello Welcome to test signup page</p>
         <SignupForm />

@@ -2,13 +2,22 @@
 import PasswordRules from "@/pages/components/PasswordRules";
 import React, { useState } from "react";
 
-import { calculatePasswordStrength } from "@/utils/passwordUtils";
+import hide from "@/public/svg/hide.svg";
+import show from "@/public/svg/show.svg";
+
+import {
+  calculatePasswordStrength,
+  generateStrongPassword,
+} from "@/utils/passwordUtils";
 import { Progress } from "@radix-ui/themes";
+import Image from "next/image";
 
 function SignupForm() {
   const [password, setPassword] = useState("");
   const [passwordConfirm, setPasswordConfirm] = useState("");
   const [isPasswordMatch, setIsPasswordMatch] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showPasswordConfirm, setShowPasswordConfirm] = useState(false);
   const [strength, setStrength] = useState<[number, number]>([0, 0]);
   const maxStrength = 128;
 
@@ -22,7 +31,15 @@ function SignupForm() {
   const calculateStrengthPercentage = (entropy: number) => {
     return Math.min((entropy / maxStrength) * 100, 100);
   };
-  console.log(strength);
+
+  const handleGeneratePassword = () => {
+    const newGeneratedPassword = generateStrongPassword();
+    setPassword(newGeneratedPassword);
+    setPasswordConfirm(newGeneratedPassword); // Set both passwords to the generated one
+    setIsPasswordMatch(true); // They will match as they are the same
+    const [entropy, years] = calculatePasswordStrength(newGeneratedPassword);
+    setStrength([entropy, years]);
+  };
 
   const progressColor = () => {
     if (strength[0] < 50) {
@@ -69,12 +86,32 @@ function SignupForm() {
           )}
 
           <div>
-            <input
-              type="password"
-              placeholder="Password"
-              onChange={handlePasswordChange}
-              className="w-full mb-3 rounded px-3 py-6 bg-secondaryThree text-white mt-2 placeholder:text-white placeholder-opacity-50 focus:outline-none focus:border-l-4 focus:border-primary transition-all ease-in"
-            />
+            <div className="relative flex gap-2">
+              <input
+                type={showPassword ? "text" : "password"}
+                placeholder="Password"
+                value={password}
+                onChange={handlePasswordChange}
+                className=" w-full mb-3 rounded px-3 py-6 bg-secondaryThree text-white mt-2 placeholder:text-white placeholder-opacity-50 focus:outline-none focus:border-l-4 focus:border-primary transition-all ease-in"
+              />
+
+              {showPassword ? (
+                <Image
+                  src={show}
+                  alt="hide"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute cursor-pointer w-5 h-5 top-1/2 right-5 transform -translate-y-1/2"
+                />
+              ) : (
+                <Image
+                  src={hide}
+                  alt="hide"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute cursor-pointer w-5 h-5 top-1/2 right-5 transform -translate-y-1/2"
+                />
+              )}
+            </div>
+
             <div>
               <Progress
                 value={calculateStrengthPercentage(strength[0]) || 0}
@@ -94,19 +131,49 @@ function SignupForm() {
             </div>
           </div>
 
-          <div>
+          <div className="relative">
             <input
-              type="password"
+              type={showPasswordConfirm ? "text" : "password"}
               placeholder="Confirm Password"
+              value={passwordConfirm}
+              onPaste={(e) => e.preventDefault()}
               onChange={(e) => handlePasswordMatch(e)}
               className="w-full mb-3 rounded px-3 py-6 bg-secondaryThree text-white mt-2 placeholder:text-white placeholder-opacity-50 focus:outline-none focus:border-l-4 focus:border-primary transition-all ease-in"
             />
+
+            {showPasswordConfirm ? (
+              <Image
+                src={show}
+                alt="hide"
+                onClick={() => setShowPasswordConfirm(!showPasswordConfirm)}
+                className="absolute cursor-pointer w-5 h-5 top-1/2 right-5 transform -translate-y-1/2"
+              />
+            ) : (
+              <Image
+                src={hide}
+                alt="hide"
+                onClick={() => setShowPasswordConfirm(!showPasswordConfirm)}
+                className="absolute cursor-pointer w-5 h-5 top-1/2 right-5 transform -translate-y-1/2"
+              />
+            )}
           </div>
         </div>
 
-        <button className="text-secondaryTwo font-bold bg-primary py-2 w-5/12 rounded shadow-primary shadow-lg hover:shadow-primary hover:shadow-2xl transition-all duration-300 ease-in cursor-pointer">
-          Signup
-        </button>
+        <div className="w-full flex gap-5">
+          <button
+            type="submit"
+            className="text-secondaryTwo font-bold bg-primary py-2 w-5/12 rounded shadow-primary shadow-lg hover:shadow-primary hover:shadow-2xl transition-all duration-300 ease-in cursor-pointer"
+          >
+            Signup
+          </button>
+          <button
+            type="button"
+            className="bg-secondary px-2 rounded"
+            onClick={handleGeneratePassword}
+          >
+            Generate Password
+          </button>
+        </div>
       </form>
     </div>
   );
