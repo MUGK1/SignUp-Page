@@ -2,10 +2,17 @@ import { Raleway } from "next/font/google";
 import Image from "next/image";
 
 import SignupForm from "@/pages/components/SignupForm";
+import { Metadata } from "next";
 import { useState } from "react";
 import mountains from "../public/images/mountain.jpg";
 
 const raleWay = Raleway({ subsets: ["latin"] });
+
+export const metadata: Metadata = {
+  title: "SignUp Page",
+  description:
+    "A simple signup page for a website, Cybersecurity Course Project",
+};
 
 export default function Home() {
   const [name, setName] = useState("");
