@@ -12,7 +12,7 @@ import {
 import { Progress } from "@radix-ui/themes";
 import Image from "next/image";
 
-function SignupForm() {
+function SignupForm({ setName }: { setName: (name: string) => void }) {
   const [password, setPassword] = useState("");
   const [passwordConfirm, setPasswordConfirm] = useState("");
   const [isPasswordMatch, setIsPasswordMatch] = useState(false);
@@ -20,6 +20,11 @@ function SignupForm() {
   const [showPasswordConfirm, setShowPasswordConfirm] = useState(false);
   const [strength, setStrength] = useState<[number, number]>([0, 0]);
   const maxStrength = 128;
+
+  //handle setName
+  const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setName(event.target.value);
+  };
 
   const handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newPassword = event.target.value;
@@ -67,6 +72,7 @@ function SignupForm() {
         <input
           type="text"
           placeholder="Full Name"
+          onChange={handleNameChange}
           className="w-full px-3 rounded py-6 bg-secondaryThree text-white mt-2 placeholder:text-white placeholder-opacity-50 focus:outline-none focus:border-l-4 focus:border-primary transition-all ease-in"
         />
         <input
